@@ -30,9 +30,9 @@ chdir($git_root) or die "$!";
 my ($oldrev, $newrev) = @ARGV;
 $oldrev ||= 'HEAD';
 if ($newrev) {
-	open($diff, '-|', 'git', '--no-pager', 'diff', $oldrev, $newrev) or die;
+	open($diff, '-|', 'git', '--no-pager', 'diff', '--unified=0', $oldrev, $newrev) or die;
 } else {
-	open($diff, '-|', 'git', '--no-pager', 'diff', $oldrev) or die;
+	open($diff, '-|', 'git', '--no-pager', 'diff', '--unified=0', $oldrev) or die;
 }
 
 my ($pre, $post);
@@ -63,15 +63,15 @@ while (<$diff>) {
 		my $o_end = $o_ofs + $o_cnt - 1;
 		my $n_end = $n_ofs + $n_cnt - 1;
 		if (!$create) {
-			open($pre, '-|', 'git', 'blame', '-M', "-L$o_ofs,$o_end",
+			open($pre, '-|', 'git', 'blame', '-e', '-M', "-L$o_ofs,$o_end",
 			     $oldrev, '--', $prefilename) or die;
 		}
 		if (!$delete) {
 			if ($newrev) {
-				open($post, '-|', 'git', 'blame', '-M', "-L$n_ofs,$n_end",
+				open($post, '-|', 'git', 'blame', '-e', '-M', "-L$n_ofs,$n_end",
 				     $newrev, '--', $postfilename) or die;
 			} else {
-				open($post, '-|', 'git', 'blame', '-M', "-L$n_ofs,$n_end",
+				open($post, '-|', 'git', 'blame', '-e', '-M', "-L$n_ofs,$n_end",
 				     '--', $postfilename) or die;
 			}
 		}
